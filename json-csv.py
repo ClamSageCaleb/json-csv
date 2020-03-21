@@ -3,6 +3,8 @@ from pathlib import Path
 from flatten_json import flatten
 import json
 
+#TODO: Catch error for incorrect path
+
 jsonPath = input("Path to json file: ")
 jsonPath = jsonPath.replace('"', '') 
 
