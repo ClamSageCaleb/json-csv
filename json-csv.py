@@ -23,3 +23,7 @@ df.to_csv('test.csv', index=True, encoding="utf-8")
 # create excel (test 2) readable file
 df = pd.json_normalize(flat_json)
 df.to_csv('test2.csv', index=True, encoding="utf-8")
+
+# prints complete message
+print("\nDone! Please check for files 'test.csv' and 'test2.csv'")
+input("\nPress any key to continue...")
