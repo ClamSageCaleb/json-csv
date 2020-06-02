@@ -61,7 +61,19 @@ for filename in os.listdir(jsonDir):
             for m in re.finditer(fitbit, key):
                 for n in re.finditer('_data_value', key):
                     sDict[key.replace(fitbit, "Value ").replace("_data_value", "")] = flat_json[key]
-               
+
+                for n in re.finditer('_data_systolic_value', key):
+                    sDict[key.replace(fitbit, "Systolic Value ").replace("_data_systolic_value", "")] = flat_json[key]
+
+                for n in re.finditer('_data_systolic_unit', key):
+                    sDict[key.replace(fitbit, "Systolic Unit ").replace("_data_systolic_unit", "")] = flat_json[key]
+
+                for n in re.finditer('_data_diastolic_value', key):
+                    sDict[key.replace(fitbit, "Diastolic Value ").replace("_data_diastolic_value", "")] = flat_json[key]
+                    
+                for n in re.finditer('_data_diastolic_unit', key):
+                    sDict[key.replace(fitbit, "Diastolic Unit ").replace("_data_diastolic_unit", "")] = flat_json[key]
+
                 for n in re.finditer('_data_unit', key):
                     sDict[key.replace(fitbit, "Unit ").replace("_data_unit", "")] = flat_json[key]
                
