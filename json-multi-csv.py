@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import numpy as np
 from pathlib import Path
 from flatten_json import flatten
 import re
@@ -9,6 +10,16 @@ jsonDir = r'./jsons/'
 jsonDone = r'./jsons-done/'
 csvVertPath = r'./data-converted-vertical/'
 csvHorizPath = r'./data-converted-horizontal/'
+
+
+fitbit = 'related_PatientHealthResult_'
+
+def get_column_array(df, column):
+    expected_length = len(df)
+    current_array = df[column].dropna().values
+    if len(current_array) < expected_length:
+        current_array = np.append(current_array, [''] * (expected_length - len(current_array)))
+    return current_array
 
 
 if not os.path.exists(csvVertPath and csvHorizPath and jsonDir and jsonDone):
@@ -29,14 +40,13 @@ else:
     "\t- data-conversion-horizontal\n" +
     "\t- jsons-done\n")
 
-sDict = {}
-fitbit = 'related_PatientHealthResult_'
-
 print("\nPlease place all JSON files in the jsons directory. \n")
 directory = input("Press any key to continue... ")
 print("\nBeginning conversion...\n")
 
 for filename in os.listdir(jsonDir):
+    sDict = {}
+    days = {}
     if filename.endswith(".json"): 
         p = Path(jsonDir + "\\" + filename)
         root, ext = os.path.splitext(filename)
@@ -44,6 +54,7 @@ for filename in os.listdir(jsonDir):
         with p.open('r', encoding='utf-8') as f:
             d = json.load(f)
         flat_json = (flatten(d))
+        flat_json = {k:v for k,v in flat_json.items() if v is not None}
 
         # Selecting important elements from the flat_json dictionary
         sDict['display_name'] = flat_json['display_name']
@@ -85,21 +96,43 @@ for filename in os.listdir(jsonDir):
 
                 for n in re.finditer('_metric_type', key):
                     sDict[key.replace(fitbit, "Metric ").replace("_metric_type", "")] = flat_json[key]
+
+        for key, v in sDict.items():
+            for n in re.finditer('Occurred_At', key):
+                days[v] = ''
         
+        sDays = sorted(days.keys())
         # create dataframe
-        #df = pd.DataFrame.from_dict(flat_json, orient="index")
-        dfFiltered = pd.DataFrame.from_dict(sDict, orient="index")
+        #dfTest = pd.DataFrame.from_dict(sDict, orient="index")
+        df = pd.DataFrame(columns=list(sDays))
+
+        for day in df.columns:
+            for key in sDict:
+                for n in re.finditer('Occurred_At ', key):
+                    if day == sDict[key]:
+                        num = re.findall(r'\d+', key)
+                        numStr = ''.join(num)
+                        val = "Value " + numStr
+                        unit = "Unit " + numStr
+                        if val in sDict and unit in sDict:
+                            x = sDict[val]
+                            y = sDict[unit]
+                            data = str(x) + ' ' + y
+                            df = df.append({day: data}, ignore_index=True)
+
+        for column in df.columns:
+            df[column] = get_column_array(df, column)
+
 
         # create excel (vertical) readable file
-        dfFiltered.to_csv(csvVertPath + root + '.csv', index=True, encoding="utf-8")
+        #dfTest.to_csv(csvVertPath + root + '.csv', index=True, encoding="utf-8")
 
         # create excel (horizontal) readable file
-        dfFiltered = pd.json_normalize(sDict)
-        dfFiltered.to_csv(csvHorizPath + root + '(format).csv', index=True, encoding="utf-8")
+        df.to_csv(csvHorizPath + root + '.csv', index=False, encoding="utf-8")
 
-        print("\n" + root + ".csv is complete. " + root + "(format.csv) is complete." +
+        print("\n" + root + ".csv is complete. " +
         "\nCheck the data-converted directories for your files.\n" + 
-        "Moving " + filename + "-> jsons-done.")
+        "Moving " + filename + "-> jsons-done.\n")
 
         os.rename(p, jsonDone + filename)
         continue
