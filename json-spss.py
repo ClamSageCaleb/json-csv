@@ -8,11 +8,7 @@ import json
 
 jsonDir = r'./jsons/'
 jsonDone = r'./jsons-done/'
-csvVertPath = r'./data-converted-vertical/'
-csvHorizPath = r'./data-converted-horizontal/'
-
-
-fitbit = 'related_PatientHealthResult_'
+csvPath = r'./data-converted/'
 
 def get_column_array(df, column):
     expected_length = len(df)
@@ -21,28 +17,90 @@ def get_column_array(df, column):
         current_array = np.append(current_array, [''] * (expected_length - len(current_array)))
     return current_array
 
+def filtered(orig, ref):
 
-if not os.path.exists(csvVertPath and csvHorizPath and jsonDir and jsonDone):
-    print("\nCouldn't find directories: \n" + 
-    "\t- jsons\n" + 
-    "\t- data-conversion-vertical\n" +  
-    "\t- data-conversion-horizontal\n" +
-    "\t- jsons-done\n" +
-    "\nCreating directories now.")
-    os.makedirs(csvVertPath)
-    os.makedirs(csvHorizPath)
-    os.makedirs(jsonDir)
-    os.makedirs(jsonDone)
-else:
-    print("\nDirectories found: \n" + 
-    "\t- jsons\n" + 
-    "\t- data-conversion-vertical\n" +  
-    "\t- data-conversion-horizontal\n" +
-    "\t- jsons-done\n")
+    fitbit = 'related_PatientHealthResult_'
 
-print("\nPlease place all JSON files in the jsons directory. \n")
-directory = input("Press any key to continue... ")
-print("\nBeginning conversion...\n")
+    # Selecting important elements from the flat_json dictionary
+    orig['display_name'] = ref['display_name']
+    orig['_primary_coach'] = ref['_primary_coach']
+    orig['birth_date'] = ref['birth_date']
+    for key in ref:
+        if key == 'gender':
+            orig['gender'] = ref['gender']
+        else:
+            continue
+    orig['email_address'] = ref['email_address']
+
+    # Filtering the original dictionary by data and placing it in a new dictionary called sDict
+    for key in ref:
+        for m in re.finditer(fitbit, key):
+            for n in re.finditer('_data_value', key):
+                orig[key.replace(fitbit, "Value ").replace("_data_value", "")] = ref[key]
+
+            for n in re.finditer('_data_systolic_value', key):
+                orig[key.replace(fitbit, "Systolic Value ").replace("_data_systolic_value", "")] = ref[key]
+
+            for n in re.finditer('_data_systolic_unit', key):
+                orig[key.replace(fitbit, "Systolic Unit ").replace("_data_systolic_unit", "")] = ref[key]
+
+            for n in re.finditer('_data_diastolic_value', key):
+                 orig[key.replace(fitbit, "Diastolic Value ").replace("_data_diastolic_value", "")] = ref[key]
+                    
+            for n in re.finditer('_data_diastolic_unit', key):
+                orig[key.replace(fitbit, "Diastolic Unit ").replace("_data_diastolic_unit", "")] = ref[key]
+
+            for n in re.finditer('_data_unit', key):
+                orig[key.replace(fitbit, "Unit ").replace("_data_unit", "")] = ref[key]
+               
+            for n in re.finditer('_occurred_at_local_time', key):
+                orig[key.replace(fitbit, "Occurred_At ").replace("_occurred_at", "")] = ref[key]
+            
+            for n in re.finditer('_updated_at', key):
+                orig[key.replace(fitbit, "Updated_At ").replace("_updated_at", "")] = ref[key]
+
+            for n in re.finditer('_metric_type', key):
+                orig[key.replace(fitbit, "Metric ").replace("_metric_type", "")] = ref[key]
+    
+    return orig
+
+def dirs():
+    if not os.path.exists(csvPath and jsonDir and jsonDone):
+        print("\nCouldn't find directories: \n" + 
+        "\t- jsons\n" + 
+        "\t- data-conversion\n" +
+        "\t- jsons-done\n" +
+        "\nCreating directories now.")
+        os.makedirs(csvPath)
+        os.makedirs(jsonDir)
+        os.makedirs(jsonDone)
+    else:
+        print("\nDirectories found: \n" + 
+        "\t- jsons\n" + 
+        "\t- data-conversion\n" +
+        "\t- jsons-done\n")
+
+    print("\nPlease place all JSON files in the jsons directory. \n")
+    begin = input("Press any key to continue... ")
+    print("\nBeginning conversion...\n")
+
+def dfformat(df, dict):
+    for day in df.columns:
+        for key in dict:
+            for n in re.finditer('Occurred_At ', key):
+                if day == dict[key].split('T')[0]:
+                    num = re.findall(r'\d+', key)
+                    numStr = ''.join(num)
+                    val = "Value " + numStr
+                    unit = "Unit " + numStr
+                    if val in dict and unit in dict:
+                        x = dict[val]
+                        y = dict[unit]
+                        data = str(x) + ' ' + y
+                        df = df.append({day: data}, ignore_index=True)
+    return df
+
+dirs()
 
 for filename in os.listdir(jsonDir):
     sDict = {}
@@ -50,90 +108,42 @@ for filename in os.listdir(jsonDir):
     if filename.endswith(".json"): 
         p = Path(jsonDir + "\\" + filename)
         root, ext = os.path.splitext(filename)
+
         # read json
         with p.open('r', encoding='utf-8') as f:
             d = json.load(f)
         flat_json = (flatten(d))
         flat_json = {k:v for k,v in flat_json.items() if v is not None}
 
-        # Selecting important elements from the flat_json dictionary
-        sDict['display_name'] = flat_json['display_name']
-        sDict['_primary_coach'] = flat_json['_primary_coach']
-        sDict['birth_date'] = flat_json['birth_date']
-        for key in flat_json:
-            if key == 'gender':
-                sDict['gender'] = flat_json['gender']
-            else:
-                continue
-        sDict['email_address'] = flat_json['email_address']
-
-        # Filtering the original dictionary by data and placing it in a new dictionary called sDict
-        for key in flat_json:
-            for m in re.finditer(fitbit, key):
-                for n in re.finditer('_data_value', key):
-                    sDict[key.replace(fitbit, "Value ").replace("_data_value", "")] = flat_json[key]
-
-                for n in re.finditer('_data_systolic_value', key):
-                    sDict[key.replace(fitbit, "Systolic Value ").replace("_data_systolic_value", "")] = flat_json[key]
-
-                for n in re.finditer('_data_systolic_unit', key):
-                    sDict[key.replace(fitbit, "Systolic Unit ").replace("_data_systolic_unit", "")] = flat_json[key]
-
-                for n in re.finditer('_data_diastolic_value', key):
-                    sDict[key.replace(fitbit, "Diastolic Value ").replace("_data_diastolic_value", "")] = flat_json[key]
-                    
-                for n in re.finditer('_data_diastolic_unit', key):
-                    sDict[key.replace(fitbit, "Diastolic Unit ").replace("_data_diastolic_unit", "")] = flat_json[key]
-
-                for n in re.finditer('_data_unit', key):
-                    sDict[key.replace(fitbit, "Unit ").replace("_data_unit", "")] = flat_json[key]
-               
-                for n in re.finditer('_occurred_at_local_time', key):
-                    sDict[key.replace(fitbit, "Occurred_At ").replace("_occurred_at", "")] = flat_json[key]
-            
-                for n in re.finditer('_updated_at', key):
-                    sDict[key.replace(fitbit, "Updated_At ").replace("_updated_at", "")] = flat_json[key]
-
-                for n in re.finditer('_metric_type', key):
-                    sDict[key.replace(fitbit, "Metric ").replace("_metric_type", "")] = flat_json[key]
-
+        sDict = filtered(sDict, flat_json)
+        
         for key, v in sDict.items():
             for n in re.finditer('Occurred_At', key):
                 date = v.split('T')[0]
                 days[date] = None
         
         sDays = sorted(days.keys())
+
         # create dataframe
         df = pd.DataFrame(columns=list(sDays))
 
-        for day in df.columns:
-            for key in sDict:
-                for n in re.finditer('Occurred_At ', key):
-                    if day == sDict[key].split('T')[0]:
-                        num = re.findall(r'\d+', key)
-                        numStr = ''.join(num)
-                        val = "Value " + numStr
-                        unit = "Unit " + numStr
-                        if val in sDict and unit in sDict:
-                            x = sDict[val]
-                            y = sDict[unit]
-                            data = str(x) + ' ' + y
-                            df = df.append({day: data}, ignore_index=True)
+        df = dfformat(df, sDict)
 
         for column in df.columns:
             df[column] = get_column_array(df, column)
-    
-        # create excel (vertical) readable file
-        #dfTest.to_csv(csvVertPath + root + '.csv', index=True, encoding="utf-8")
 
-        # create excel (horizontal) readable file
-        df.to_excel(csvHorizPath + root + '.xlsx', index=False, encoding="utf-8")
+        df = pd.DataFrame.drop_duplicates(df)
+
+        # create excel file
+        df.to_excel(csvPath + root + '.xlsx', index=False, encoding="utf-8")
 
         print("\n" + root + ".xlsx is complete. " +
         "\nCheck the data-converted directories for your files.\n" + 
-        "Moving " + filename + "-> jsons-done.\n")
+        "Moving " + filename + " -> jsons-done.\n")
 
         os.rename(p, jsonDone + filename)
         continue
     else:
         continue
+
+print("File transfer complete!")

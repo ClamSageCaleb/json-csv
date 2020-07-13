@@ -4,12 +4,12 @@
   <br>
 </h1>
 
-<h4 align="center">A simple python script that does json -> csv conversion</h4>
+<h4 align="center">A simple python script that does json -> xlsx conversion</h4>
 <br>
 
 ## Running
 
-1. Download the script, <strong>json-csv.py</strong>
+1. Download the script, <strong>json-spss.py</strong>
 2. Ensure you have Python3 installed
 3. Open terminal/powershell and run script python .\json-csv.py
 
