@@ -99,17 +99,17 @@ for filename in os.listdir(jsonDir):
 
         for key, v in sDict.items():
             for n in re.finditer('Occurred_At', key):
-                days[v] = ''
+                date = v.split('T')[0]
+                days[date] = None
         
         sDays = sorted(days.keys())
         # create dataframe
-        #dfTest = pd.DataFrame.from_dict(sDict, orient="index")
         df = pd.DataFrame(columns=list(sDays))
 
         for day in df.columns:
             for key in sDict:
                 for n in re.finditer('Occurred_At ', key):
-                    if day == sDict[key]:
+                    if day == sDict[key].split('T')[0]:
                         num = re.findall(r'\d+', key)
                         numStr = ''.join(num)
                         val = "Value " + numStr
@@ -122,15 +122,14 @@ for filename in os.listdir(jsonDir):
 
         for column in df.columns:
             df[column] = get_column_array(df, column)
-
-
+    
         # create excel (vertical) readable file
         #dfTest.to_csv(csvVertPath + root + '.csv', index=True, encoding="utf-8")
 
         # create excel (horizontal) readable file
-        df.to_csv(csvHorizPath + root + '.csv', index=False, encoding="utf-8")
+        df.to_excel(csvHorizPath + root + '.xlsx', index=False, encoding="utf-8")
 
-        print("\n" + root + ".csv is complete. " +
+        print("\n" + root + ".xlsx is complete. " +
         "\nCheck the data-converted directories for your files.\n" + 
         "Moving " + filename + "-> jsons-done.\n")
 
