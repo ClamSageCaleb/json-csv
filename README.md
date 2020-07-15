@@ -9,9 +9,14 @@
 
 ## Running
 
-1. Download the script, <strong>json-spss.py</strong>
-2. Ensure you have Python3 installed
-3. Open terminal/powershell and run script python .\json-csv.py
+1. Clone the Directory
+2. Ensure you have Python3 / NodeJS / TypeScript installed
+      2A. Python3 https://www.python.org/downloads/
+      2B. NodeJS https://nodejs.org/en/
+      2C. TypeScript ```npm -g install typescript```
+3. Open terminal/powershell and compile json.ts
+      3A. Compile json.ts ```tsc json.ts```
+      3B. Run ```node json.js
 
 
 ---
