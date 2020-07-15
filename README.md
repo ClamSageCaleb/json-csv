@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-    Json to CSV converter for FitBit json files
+    JSON to Excel converter for FitBit json files
   <br>
 </h1>
 
@@ -8,8 +8,8 @@
 <br>
 
 ## Running
-
 <br>1. Clone the Directory<br>
+<br>&emsp;Repo ```git clone https://github.com/clamsagecaleb/json-csv.git```<br>
 <br>2. Ensure you have Python3 / NodeJS / TypeScript installed<br>
 <br>&emsp;Python3 https://www.python.org/downloads/<br>
 <br>&emsp;NodeJS https://nodejs.org/en/<br>
