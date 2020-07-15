@@ -5,6 +5,7 @@ from pathlib import Path
 from flatten_json import flatten
 import re
 import json
+import time
 
 jsonDir = r'./jsons/'
 jsonDone = r'./jsons-done/'
@@ -80,9 +81,9 @@ def dirs():
         "\t- data-conversion\n" +
         "\t- jsons-done\n")
 
-    print("\nPlease place all JSON files in the jsons directory. \n")
-    #begin = input("Press any key to continue... ")
-    print("\nBeginning conversion...\n")
+    print("\nPlease place all JSON files in the jsons directory.\nTen seconds before conversion begins...\n")
+    time.sleep(10)
+    print("\nBeginning conversion...\nTime: " + time.ctime() + "\n")
 
 def dfformat(df, dict):
     for day in df.columns:
@@ -148,4 +149,4 @@ for filename in os.listdir(jsonDir):
     else:
         continue
 
-print("File transfer complete!")
+print("File transfer complete!\nTime: " + time.ctime())
