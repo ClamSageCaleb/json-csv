@@ -81,7 +81,7 @@ def dirs():
         "\t- jsons-done\n")
 
     print("\nPlease place all JSON files in the jsons directory. \n")
-    begin = input("Press any key to continue... ")
+    #begin = input("Press any key to continue... ")
     print("\nBeginning conversion...\n")
 
 def dfformat(df, dict):
@@ -100,6 +100,10 @@ def dfformat(df, dict):
                         df = df.append({day: data}, ignore_index=True)
     return df
 
+def js_output():
+    output = "\n" + root + ".xlsx is complete. " +  "\nCheck the data-converted directories for your files.\n" + "Moving " + filename + " -> jsons-done.\n"
+    print(output)
+
 dirs()
 
 for filename in os.listdir(jsonDir):
@@ -116,7 +120,7 @@ for filename in os.listdir(jsonDir):
         flat_json = {k:v for k,v in flat_json.items() if v is not None}
 
         sDict = filtered(sDict, flat_json)
-        
+
         for key, v in sDict.items():
             for n in re.finditer('Occurred_At', key):
                 date = v.split('T')[0]
@@ -137,9 +141,7 @@ for filename in os.listdir(jsonDir):
         # create excel file
         df.to_excel(csvPath + root + '.xlsx', index=False, encoding="utf-8")
 
-        print("\n" + root + ".xlsx is complete. " +
-        "\nCheck the data-converted directories for your files.\n" + 
-        "Moving " + filename + " -> jsons-done.\n")
+        js_output()
 
         os.rename(p, jsonDone + filename)
         continue
