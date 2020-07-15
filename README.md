@@ -10,13 +10,13 @@
 ## Running
 
 1. Clone the Directory
-2. Ensure you have Python3 / NodeJS / TypeScript installed
-      2A. Python3 https://www.python.org/downloads/
-      2B. NodeJS https://nodejs.org/en/
-      2C. TypeScript ```npm -g install typescript```
-3. Open terminal/powershell and compile json.ts
-      3A. Compile json.ts ```tsc json.ts```
-      3B. Run ```node json.js
+2. Ensure you have Python3 / NodeJS / TypeScript installed<br>
+      2A. Python3 https://www.python.org/downloads/<br>
+      2B. NodeJS https://nodejs.org/en/<br>
+      2C. TypeScript ```npm -g install typescript```<br>
+3. Open terminal/powershell and compile json.ts<br>
+      3A. Compile json.ts ```tsc json.ts```<br>
+      3B. Run ```node json.js```<br>
 
 
 ---
