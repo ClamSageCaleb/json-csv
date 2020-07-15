@@ -149,4 +149,4 @@ for filename in os.listdir(jsonDir):
     else:
         continue
 
-print("File transfer complete!\nTime: " + time.ctime())
+print("File transfer complete!\nTime: " + time.ctime() + "\n")
