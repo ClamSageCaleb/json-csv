@@ -7,7 +7,7 @@ import re
 import json
 import time
 
-jsonDir = r'./jsons/'
+jsonDir = r'./jsons-for-py/'
 jsonDone = r'./jsons-done/'
 csvPath = r'./data-converted/'
 
