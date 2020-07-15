@@ -9,7 +9,7 @@
 
 ## Running
 
-1. Clone the Directory<br>
+<br>1. Clone the Directory<br>
 <br>2. Ensure you have Python3 / NodeJS / TypeScript installed<br>
 <br>&emsp;Python3 https://www.python.org/downloads/<br>
 <br>&emsp;NodeJS https://nodejs.org/en/<br>
