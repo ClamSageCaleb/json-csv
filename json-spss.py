@@ -22,17 +22,6 @@ def filtered(orig, ref):
 
     fitbit = 'related_PatientHealthResult_'
 
-    # Selecting important elements from the flat_json dictionary
-    orig['display_name'] = ref['display_name']
-    orig['_primary_coach'] = ref['_primary_coach']
-    orig['birth_date'] = ref['birth_date']
-    for key in ref:
-        if key == 'gender':
-            orig['gender'] = ref['gender']
-        else:
-            continue
-    orig['email_address'] = ref['email_address']
-
     # Filtering the original dictionary by data and placing it in a new dictionary called sDict
     for key in ref:
         for m in re.finditer(fitbit, key):
@@ -57,9 +46,6 @@ def filtered(orig, ref):
             for n in re.finditer('_occurred_at_local_time', key):
                 orig[key.replace(fitbit, "Occurred_At ").replace("_occurred_at", "")] = ref[key]
             
-            for n in re.finditer('_updated_at', key):
-                orig[key.replace(fitbit, "Updated_At ").replace("_updated_at", "")] = ref[key]
-
             for n in re.finditer('_metric_type', key):
                 orig[key.replace(fitbit, "Metric ").replace("_metric_type", "")] = ref[key]
     
@@ -94,10 +80,12 @@ def dfformat(df, dict):
                     numStr = ''.join(num)
                     val = "Value " + numStr
                     unit = "Unit " + numStr
+                    metric = "Metric " + numStr
                     if val in dict and unit in dict:
                         x = dict[val]
                         y = dict[unit]
-                        data = str(x) + ' ' + y
+                        z = dict[metric]
+                        data = str(x) + ' ' + y + ' ' + z
                         df = df.append({day: data}, ignore_index=True)
     return df
 
