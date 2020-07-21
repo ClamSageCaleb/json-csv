@@ -4,6 +4,8 @@
   "description": "<h1 align=\"center\">\r   <br>\r     JSON to Excel converter for FitBit json files\r   <br>\r </h1>",
   "main": "json.js",
   "dependencies": {
+    "@types/node": "^14.0.24",
+    "flat": "^5.0.0",
     "python-shell": "^2.0.1"
   },
   "devDependencies": {},
