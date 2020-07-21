@@ -1,0 +1,23 @@
+{
+  "name": "json-csv",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\">\r   <br>\r     JSON to Excel converter for FitBit json files\r   <br>\r </h1>",
+  "main": "json.js",
+  "dependencies": {
+    "python-shell": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ClamSageCaleb/json-csv.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ClamSageCaleb/json-csv/issues"
+  },
+  "homepage": "https://github.com/ClamSageCaleb/json-csv#readme"
+}

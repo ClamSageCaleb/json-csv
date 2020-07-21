@@ -1,5 +1,4 @@
 var fs = require('fs');
-var path = require('path');
 import {PythonShell} from 'python-shell';
 var dir = './jsons-for-py';
 
