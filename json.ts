@@ -2,13 +2,19 @@ var fs = require('fs');
 var flatten = require('flat');
 import {PythonShell} from 'python-shell';
 var dir = './jsons-for-py';
+var jsons = './jsons';
+var jsons_done = './jsons-done';
+var data_converted = './data-converted';
 
-console.log('\nChecking for jsons-for-py...\n')
-if(!fs.existsSync(dir)) {
-    console.log('Making jsons-for-py...\n')
+console.log('\nChecking for jsons-for-py and jsons...\n')
+if(!fs.existsSync(dir) && !fs.existsSync(jsons) && !fs.existsSync(jsons_done) && !fs.existsSync(data_converted)) {
+    console.log('Making jsons-for-py and jsons...\n')
     fs.mkdirSync(dir);
+    fs.mkdirSync(jsons);
+    fs.mkdirSync(jsons_done);
+    fs.mkdirSync(data_converted);
 } else {
-    console.log('Directory Found!\n')
+    console.log('Directories Found!\n')
 };
 
 
