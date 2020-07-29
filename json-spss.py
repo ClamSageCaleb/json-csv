@@ -78,15 +78,35 @@ def dfformat(df, dict):
                 if day == dict[key].split('T')[0]:
                     num = re.findall(r'\d+', key)
                     numStr = ''.join(num)
+                    # TODO bug might be here, only finds value not Systolic Value or Diastolic Value
                     val = "Value " + numStr
+                    sys = "Systolic Value " + numStr
+                    sunit = "Systolic Unit " + numStr
+                    dia = "Diastolic Value " + numStr
+                    dunit = "Diastolic Unit " + numStr
                     unit = "Unit " + numStr
                     metric = "Metric " + numStr
                     if val in dict and unit in dict:
                         x = dict[val]
                         y = dict[unit]
                         z = dict[metric]
-                        data = str(x) + ' ' + y + ' ' + z
+                        data = f"{x} {y} {z}"
+                        #data = str(x) + ' ' + y + ' ' + z
                         df = df.append({day: data}, ignore_index=True)
+                    if sys in dict and sunit in dict:
+                        s = dict[sys]
+                        su = dict[sunit]
+                        z = dict[metric]
+                        dataTest = f"{s} {su} {z}"
+                        #dataTest = str(s) + ' ' + su + ' ' + metric
+                        df = df.append({day: dataTest}, ignore_index=True)
+                    if dia in dict and dunit in dict:
+                        d = dict[dia]
+                        du = dict[dunit]
+                        z = dict[metric]
+                        dataTestDia = f"{d} {du} {z}"
+                        #dataTestDia = str(d) + ' ' + du + ' ' + metric
+                        df = df.append({day: dataTestDia}, ignore_index=True)                 
     return df
 
 def js_output():
@@ -99,7 +119,7 @@ for filename in os.listdir(jsonDir):
     sDict = {}
     days = {}
     if filename.endswith(".json"): 
-        p = Path(jsonDir + "\\" + filename)
+        p = Path(jsonDir + "/" + filename)
         root, ext = os.path.splitext(filename)
 
         # read json
@@ -109,7 +129,7 @@ for filename in os.listdir(jsonDir):
         flat_json = {k:v for k,v in flat_json.items() if v is not None}
 
         sDict = filtered(sDict, flat_json)
-
+       
         for key, v in sDict.items():
             for n in re.finditer('Occurred_At', key):
                 date = v.split('T')[0]
@@ -129,7 +149,7 @@ for filename in os.listdir(jsonDir):
 
         # create excel file
         df.to_excel(csvPath + root + '.xlsx', index=False, encoding="utf-8")
-
+    
         js_output()
 
         os.rename(p, jsonDone + filename)
