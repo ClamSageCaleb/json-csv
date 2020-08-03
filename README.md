@@ -12,7 +12,7 @@
 <br>&emsp;Repo: ```git clone https://github.com/clamsagecaleb/json-csv.git```<br>
 <br>2. Ensure you have Python3 installed<br>
 <br>&emsp;Python3: https://www.python.org/downloads/<br>
-<br>2. Running the script<br>
+<br>3. Running the script<br>
 <br>&emsp;Run: ```pip install -r requirements.txt```
 <br>&emsp;Run: ```python json-spss.py```<br>
 
