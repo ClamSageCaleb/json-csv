@@ -157,7 +157,7 @@ def dfformat(df, dict):
                         df = df.append({day: diaData}, ignore_index=True)                 
     return df
 
-def js_output():
+def output():
     '''
     Returns output to show user that data conversion is happening
 
@@ -205,7 +205,7 @@ for filename in os.listdir(jsonDir):
         # create excel file
         df.to_excel(csvPath + root + '.xlsx', index=False, encoding="utf-8")
     
-        js_output()
+        output()
 
         os.rename(p, jsonDone + filename)
         continue
