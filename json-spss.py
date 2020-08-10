@@ -138,7 +138,7 @@ def dfformat(df, dict):
                         swData = f"{stepWeight} {swUnit} {swMetric}"
                         df = df.append({day: swData}, ignore_index=True)
                     # Checks if the systolic value exists
-                    if sysNum in dict and sysUnit in dict:
+                    if sysNum in dict and sysUnitNum in dict:
                         # Gets systolic value from key
                         sysVal = dict[sysNum]
                         sysUnit = dict[sysUnitNum]
@@ -147,10 +147,10 @@ def dfformat(df, dict):
                         sysData = f"{sysVal} {sysUnit} {sysMetric}"
                         df = df.append({day: sysData}, ignore_index=True)
                     # Checks if the diastolic value exists
-                    if diaNum in dict and diaUnit in dict:
+                    if diaNum in dict and diaUnitNum in dict:
                         # Gets diastolic value from key
                         diaVal = dict[diaNum]
-                        diaUnit = dict[diaUnit]
+                        diaUnit = dict[diaUnitNum]
                         diaMetric = dict[metricNum]
                         # Creates data and appeneds it to the dataframe
                         diaData = f"{diaVal} {diaUnit} {diaMetric}"
