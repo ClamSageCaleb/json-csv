@@ -12,6 +12,11 @@ jsonDir = r'./jsons/'
 jsonDone = r'./jsons-done/'
 csvPath = r'./data-converted/'
 
+# TODO: date not important, switch to day 1 - day n 
+# add back empty columns
+# add id numbers 
+# each row a id, each column a variable (d1step d1weight etc)
+
 def get_column_array(df, column):
     '''
     Drops empty values and empty cells.
