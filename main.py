@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import os
 import pandas as pd
 import numpy as np
@@ -6,9 +7,34 @@ from flatten_json import flatten
 import re
 import json
 from collections import OrderedDict
+import data_conversion
+import time
 
 jsonDir = r'./jsons/'
+jsonDone = r'./jsons-done/'
 csvPath = r'./data-converted/'
+
+# Checking if the needed directories exist
+if not os.path.exists(csvPath and jsonDir and jsonDone):
+    print("\nCouldn't find directories: \n" + 
+    "\t- jsons\n" + 
+    "\t- data-conversion\n" +
+    "\t- jsons-done\n" +
+    "\nCreating directories now.")
+    # Creates directories
+    os.makedirs(csvPath)
+    os.makedirs(jsonDir)
+    os.makedirs(jsonDone)
+else:
+    print("\nDirectories found: \n" + 
+    "\t- jsons\n" + 
+    "\t- data-conversion\n" +
+    "\t- jsons-done\n")
+
+print("\nPlease place all JSON files in the jsons directory.\nTen seconds before conversion begins...\n")
+time.sleep(10)
+print("\nGathering ID's...\nTime: " + time.ctime() + "\n")
+
 pID = {}
 
 for filename in os.listdir(jsonDir):
@@ -32,3 +58,6 @@ sPID = OrderedDict(sorted(pID.items()))
 df = pd.DataFrame.from_dict(sPID, orient='index')
 df.to_csv('pID.csv', sep="\t")
 
+print("\nID's gathered, check directory for pID.csv...\nTime: " + time.ctime() + "\n")
+
+data_conversion.main()

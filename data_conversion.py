@@ -81,31 +81,6 @@ def filtered(orig, ref):
     
     return orig
 
-def dirs():
-    '''
-    Checks for directories and creates them if they don't exist
-    '''
-    # Checking if the needed directories exist
-    if not os.path.exists(csvPath and jsonDir and jsonDone):
-        print("\nCouldn't find directories: \n" + 
-        "\t- jsons\n" + 
-        "\t- data-conversion\n" +
-        "\t- jsons-done\n" +
-        "\nCreating directories now.")
-        # Creates directories
-        os.makedirs(csvPath)
-        os.makedirs(jsonDir)
-        os.makedirs(jsonDone)
-    else:
-        print("\nDirectories found: \n" + 
-        "\t- jsons\n" + 
-        "\t- data-conversion\n" +
-        "\t- jsons-done\n")
-
-    print("\nPlease place all JSON files in the jsons directory.\nTen seconds before conversion begins...\n")
-    time.sleep(10)
-    print("\nBeginning conversion...\nTime: " + time.ctime() + "\n")
-
 def dfformat(df, dict):
     '''
     Iterates through the dictionary and matches dates in order to append data by day
@@ -166,47 +141,52 @@ def dfformat(df, dict):
        
     return df
 
-dirs()
+def main(): 
+    start = time.time()
+    print("\nBeginning conversion...\nTime: " + time.ctime() + "\n")
+    for filename in os.listdir(jsonDir):
+        sDict = {}
+        days = {}
+        if filename.endswith(".json"): 
+            p = Path(jsonDir + "/" + filename)
+            root, ext = os.path.splitext(filename)
 
-for filename in os.listdir(jsonDir):
-    sDict = {}
-    days = {}
-    if filename.endswith(".json"): 
-        p = Path(jsonDir + "/" + filename)
-        root, ext = os.path.splitext(filename)
-
-        # Read json files
-        with p.open('r', encoding='utf-8') as f:
-            d = json.load(f)
-        flat_json = (flatten(d))
-        flat_json = {k:v for k,v in flat_json.items() if v is not None}
-        sDict = filtered(sDict, flat_json)
+            # Read json files
+            with p.open('r', encoding='utf-8') as f:
+                d = json.load(f)
+            flat_json = (flatten(d))
+            flat_json = {k:v for k,v in flat_json.items() if v is not None}
+            sDict = filtered(sDict, flat_json)
        
-        # Takes value from Occurred_At key and places the value in a dictionary of days
-        for key, v in sDict.items():
-            for n in re.finditer('Occurred_At', key):
-                date = v.split('T')[0]
-                days[date] = None
+            # Takes value from Occurred_At key and places the value in a dictionary of days
+            for key, v in sDict.items():
+                for n in re.finditer('Occurred_At', key):
+                    date = v.split('T')[0]
+                    days[date] = None
         
-        # Sorts the days dictionary
-        sDays = sorted(days.keys())
+            # Sorts the days dictionary
+            sDays = sorted(days.keys())
 
-        # Create dataframe
-        df = pd.DataFrame(columns=list(sDays))
+            # Create dataframe
+            df = pd.DataFrame(columns=list(sDays))
 
-        df = dfformat(df, sDict)
+            df = dfformat(df, sDict)
 
-        for column in df.columns:
-            df[column] = get_column_array(df, column)
+            for column in df.columns:
+                df[column] = get_column_array(df, column)
 
-        # create excel file
-        df.to_excel(csvPath + flat_json["display_name"] + '.xlsx', index=False, encoding="utf-8")
+            # create excel file
+            df.to_excel(csvPath + flat_json["display_name"] + '.xlsx', index=False, encoding="utf-8")
     
-        print("\n" + flat_json["display_name"] + ".xlsx is complete. " +  "\nCheck the data-converted directories for your files.\n" + "Moving " + filename + " -> jsons-done.\n")
+            print("\n" + flat_json["display_name"] + ".xlsx is complete. " +  "\nCheck the data-converted directories for your files.\n" + "Moving " + filename + " -> jsons-done.\n")
 
-        os.rename(p, jsonDone + filename)
-        continue
-    else:
-        continue
+            os.rename(p, jsonDone + filename)
+            continue
+        else:
+            continue
+    done = time.time()
+    elapsed = done - start
+    print("File transfer complete!\nTime: " + time.ctime() + "\n" + "Time taken: " + elapsed)
 
-print("File transfer complete!\nTime: " + time.ctime() + "\n")
+if __name__ == "__main__":
+    main()
