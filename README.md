@@ -4,7 +4,8 @@
   <br>
 </h1>
 
-<h4 align="center">A simple python script that does json -> xlsx conversion</h4>
+<h4 align="center">A simple python script that does json -> xlsx conversion<br>
+for spss usage.</h4>
 <br>
 
 ## Running
@@ -14,7 +15,7 @@
 <br>&emsp;Python3: https://www.python.org/downloads/<br>
 <br>3. Running the script<br>
 <br>&emsp;Run: ```pip install -r requirements.txt```
-<br>&emsp;Run: ```python json-spss.py```<br>
+<br>&emsp;Run: ```python main.py```<br>
 
 ## Process
 <br> Once this file runs the following folders will be made in the working directory:<br>
