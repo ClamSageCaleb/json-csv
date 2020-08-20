@@ -116,8 +116,11 @@ def dfformat(df, dict):
     '''
 
     # Iterates through the days in the dataframe
+    d = 1
     for day in df.columns:
         # Iteratres through the keys in the dict
+        df = df.append({day: f"Day: {d}"}, ignore_index=True)
+        d += 1
         for key in dict:
             # Compares the date to the Occured_At key in the dictionary
             for n in re.finditer('Occurred_At ', key):
@@ -149,7 +152,7 @@ def dfformat(df, dict):
                         sysUnit = dict[sysUnitNum]
                         sysMetric = dict[metricNum]
                         # Creates data and appeneds it to the dataframe
-                        sysData = f"{sysVal} {sysUnit} {sysMetric}"
+                        sysData = f"Systolic: {sysVal} {sysUnit} {sysMetric}"
                         df = df.append({day: sysData}, ignore_index=True)
                     # Checks if the diastolic value exists
                     if diaNum in dict and diaUnitNum in dict:
@@ -158,18 +161,10 @@ def dfformat(df, dict):
                         diaUnit = dict[diaUnitNum]
                         diaMetric = dict[metricNum]
                         # Creates data and appeneds it to the dataframe
-                        diaData = f"{diaVal} {diaUnit} {diaMetric}"
-                        df = df.append({day: diaData}, ignore_index=True)                 
+                        diaData = f"Diastolic: {diaVal} {diaUnit} {diaMetric}"
+                        df = df.append({day: diaData}, ignore_index=True)        
+       
     return df
-
-def output():
-    '''
-    Returns output to show user that data conversion is happening
-
-    :return: output with file name and location
-    '''
-    output = "\n" + root + ".xlsx is complete. " +  "\nCheck the data-converted directories for your files.\n" + "Moving " + filename + " -> jsons-done.\n"
-    print(output)
 
 dirs()
 
@@ -185,7 +180,6 @@ for filename in os.listdir(jsonDir):
             d = json.load(f)
         flat_json = (flatten(d))
         flat_json = {k:v for k,v in flat_json.items() if v is not None}
-
         sDict = filtered(sDict, flat_json)
        
         # Takes value from Occurred_At key and places the value in a dictionary of days
@@ -205,12 +199,10 @@ for filename in os.listdir(jsonDir):
         for column in df.columns:
             df[column] = get_column_array(df, column)
 
-        df = pd.DataFrame.drop_duplicates(df)
-
         # create excel file
-        df.to_excel(csvPath + root + '.xlsx', index=False, encoding="utf-8")
+        df.to_excel(csvPath + flat_json["display_name"] + '.xlsx', index=False, encoding="utf-8")
     
-        output()
+        print("\n" + flat_json["display_name"] + ".xlsx is complete. " +  "\nCheck the data-converted directories for your files.\n" + "Moving " + filename + " -> jsons-done.\n")
 
         os.rename(p, jsonDone + filename)
         continue
