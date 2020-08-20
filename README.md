@@ -4,7 +4,7 @@
   <br>
 </h1>
 
-<h4 align="center">A simple python script that does json -> xlsx conversion for spss usage.</h4>
+<h4 align="center">A simple python script that does json -> xlsx conversion for SPSS usage.</h4>
 <br>
 
 ## Running
