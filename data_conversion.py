@@ -71,9 +71,9 @@ def filtered(orig, ref):
                 # Renaming key from data_unit to Unit to be more easily called later.
                 orig[key.replace(fitbit, "Unit ").replace("_data_unit", "")] = ref[key]
                
-            for n in re.finditer('_occurred_at_local_time', key):
+            for n in re.finditer('_created_at', key):
                 # Renaming key from occured_at_local_time to Occured_At to be more easily called later.
-                orig[key.replace(fitbit, "Occurred_At ").replace("_occurred_at", "")] = ref[key]
+                orig[key.replace(fitbit, "Occurred_At ").replace("_created_at", "")] = ref[key]
             
             for n in re.finditer('_metric_type', key):
                 # Renaming key from metric_type to Metric to be more easily called later.
@@ -185,8 +185,8 @@ def main():
         else:
             continue
     done = time.time()
-    elapsed = done - start
-    print("File transfer complete!\nTime: " + time.ctime() + "\n" + "Time taken: " + elapsed)
+    elapsed = (done - start) / 60
+    print("File transfer complete!\nTime: " + time.ctime() + "\n" + "Time taken: " + str(elapsed) + "minutes")
 
 if __name__ == "__main__":
     main()
