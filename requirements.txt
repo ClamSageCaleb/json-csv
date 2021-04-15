@@ -1,0 +1,6 @@
+pandas
+numpy
+pathlib
+flatten_json
+openpyxl
+
